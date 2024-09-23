@@ -5,7 +5,7 @@ import bodyParser from "body-parser";
 import { SpeechClient } from "@google-cloud/speech";
 import fs from "fs";
 import { fileURLToPath } from "url";
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const app = express();
 const port = process.env.PORT || 3000;
