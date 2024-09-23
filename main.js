@@ -22,8 +22,6 @@ const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 // const prompt = "Write a story about a magic backpack.";
 // const result = await model.generateContent(prompt);
 
-console.log(result.response.text());
-
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "uploads/"); // Directory to save the uploaded files
@@ -51,7 +49,7 @@ app.post("/upload", upload.single("audio"), async (req, res) => {
         content: audioBytes,
       },
       config: {
-        encoding: "LINEAR16", // Adjust based on your audio file format
+        encoding: "MP3", // Adjust based on your audio file format
         sampleRateHertz: 16000, // Adjust based on your audio file sample rate
         languageCode: "en-US",
       },
@@ -61,20 +59,21 @@ app.post("/upload", upload.single("audio"), async (req, res) => {
     const transcription = response.results
       .map((result) => result.alternatives[0].transcript)
       .join("\n");
+    
+    const prompt =
+      "Can you get a list of to-dos from the following speech extract?\n\n" +
+      transcription;
+    console.log("Prompt is: ", prompt);
 
-    res.json({ transcription });
+    const result = await model.generateContent(prompt);
+    console.log(result);
+
+    res.send(result);
   } catch (error) {
     res.status(500).send(error.toString());
   }
 });
 
-app.get("/summarise", (req, res) => {
-  const prompt =
-    "Can you get a list of to-dos from the following speech extract?\n\n" +
-    req.body.prompt;
-  const result = model.generateContent(prompt);
-  res.json({ result });
-});
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
