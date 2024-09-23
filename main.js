@@ -6,7 +6,9 @@ import { SpeechClient } from "@google-cloud/speech";
 import fs from "fs";
 import { fileURLToPath } from "url";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import dotenv from "dotenv";
 
+dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 
